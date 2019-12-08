@@ -1,0 +1,211 @@
+<!DOCTYPE HTML>
+<!DOCTYPE html PUBLIC "" "">
+<html lang="ja"	<meta content="IE=11.0000" http-equiv="X-UA-Compatible">	<meta charset="utf-8">	<meta name="author" content="Chizuko">	<meta name="format-detection" content="telephone=no,email=no">	<meta name="viewport" content="width=660">	<meta charset="UTF-8"><title>ゴリラ言語</title>
+<body>
+	<center><h1>ゴリラ言語</h1></center>	<br>
+	<h3>【ゴリラ言語とは？】</h3>
+	<h3>
+		　・[う][ほ][改行]のみが許されたスクリプト言語。<br>
+		　・スタック言語。<br>
+		　・Kuinで作ってる。<br>
+		　・うほうほうほうほほうほほ。<br>
+	<h3>
+	<hr>
+	<h3>【基本事項】</h3>
+	　・ソースの文字コードはBOMなしUTF-8とする。<br>
+	　・[う][ほ][改行]のみの使用することができる(厳密にはまだチェック機能がないので他の文字は無視される)<br>
+	　・[改行]は可読性をあげる意味のみもち、トークンの途中でもどこでも記述が可能。(実行時は無視される)<br>
+	　・ソースの文字コードはBOMなしUTF-8とする。<br>
+	　・森(スタック)を介してパラメータのやり取りを行う。<br>
+	　・実行終了時に森の中に残存した値はコマンドラインに出力される。<br>
+	　・NULLは「うほほうほ」で表す。<br>
+	　・部分一致するトークンについては以下の優先順位に従って処理を行う。<br>
+	　　(数字が少ないほど優先的に処理される)
+	<table border="1" style="border-collapse: collapse">
+		<tr>
+		<td><center><b>優先度</b></center></td>
+		<td><center><b>キーワード</b></center></td>
+		<td><center><b>意味</b></center></td>
+		</tr>
+		<tr>
+		<td>1</td>
+		<td>うほほうほほ</td>
+		<td>トークン区切り</td>
+		</tr>
+		<tr>
+		<td>2</td>
+		<td>うほほうほうほほ</td>
+		<td>条件付きコマンド演算子</td>
+		</tr>
+		<tr>
+		<tr>
+		<td>3</td>
+		<td>うほほうほ</td>
+		<td>NULL</td>
+		</tr>
+		<tr>
+		<td>4</td>
+		<td>その他</td>
+		<td>その他</td>
+		</tr>
+	</table>
+	<br>
+	<hr>
+	<h3>【トークン】</h3>
+	　・トークンは[数字]または[コマンド演算子]のみ<br>
+	　・[数字]の仕様については後ほど記載。<br>
+	　・[コマンド演算子]は[うほほうほほ]を使用する（詳細は後ほど記載)<br>
+	　・トークンの区切りには[うほほほ]を使用する。<br>
+	<br>
+	<hr>
+	<h3>【数字】</h3>
+	　・「うほ」の数で数字を表す([うほ]の数+1を表す。そのため、0は[うほ]、1は[うほうほ]、3は[うほうほうほうほ]となる)<br>
+	　・「うほほ」は数字の区切りを意味する<br>
+	　　　(例)24⇒うほうほうほうほほうほうほうほうほうほ<br>
+	　　　(例)365⇒うほうほうほうほうほほうほうほうほうほうほうほうほうほほうほうほうほうほうほうほ<br>
+	　・数字トークンは出現時にスタック(以後[森]と記載)に積まれる。<br>
+	<br>
+	<hr>
+	<h3>【NULL】</h3>
+	　・NULLは「うほほうほ」で表現するが、実体は[-1]である。<br>
+	　・2019/12/09時点ではゴリラ言語は負の数を扱えない。<br>
+	　・NULLの仕様については今後改修予定(2019/12/09)<br>
+	　・コマンドコードをNULLで実行した場合、コマンドは何も処理を行わない。(-1として扱わない)
+	<br>
+	<hr>
+	<h3>【コマンド】</h3>
+	　・コマンド演算子[うほほうほほ]が出現した場合、コマンドを実行する。<br>
+	　・コマンド実行時にはどのコマンドかを表す[コマンドコード]をスタックから取得し、必要ならば追加パラメータも取得する。<br>
+	　・条件付きコマンド演算子[うほほうほうほほ]はコマンド実行前にスタックから値を取得する。<br>
+	　　　→値>0ならばコマンドを実行し、値=0ならばNULLが出現するまでスタックの値を空にする。<br>
+	　　　→これにより条件分岐のような処理を行うことができる。
+	<br>
+	<hr>
+	<h2>【コマンドリファレンス】</h2>
+	<table border="1" style="border-collapse: collapse">
+		<tr>
+		<td><center><b>区分</b></center></td>
+		<td><center><b>コード</b></center></td>
+		<td><center><b>コマンド名</b></center></td>
+		<td><center><b>パラメータ</b></center></td>
+		<td><center><b>結果</b></center></td>
+		<td><center><b>解説</b></center></td>
+		</tr>
+		
+		<tr>
+		<td>演算</td>
+		<td>5</td>
+		<td>加算</td>
+		<td>なし</td>
+		<td>p1 + p2 → スタック</td>
+		<td>加算。</td>
+		</tr>
+
+		<tr>
+		<td>演算</td>
+		<td>7</td>
+		<td>乗算</td>
+		<td>なし</td>
+		<td>p1 * p2 → スタック</td>
+		<td>乗算。</td>
+		</tr>
+
+		<tr>
+		<td>演算</td>
+		<td>8</td>
+		<td>剰余</td>
+		<td>なし</td>
+		<td>p1 / p2 の余り → スタック</td>
+		<td>剰余の計算。</td>
+		</tr>
+
+		<tr>
+		<td>基本</td>
+		<td>50</td>
+		<td>トークンコピー</td>
+		<td>なし</td>
+		<td>p1 , p1→ スタック</td>
+		<td>スタックから値を1つ取り出し2つスタックに積む<br>(スタックの一番上の値をコピー)</td>
+		</tr>
+
+		<tr>
+		<td>UTL</td>
+		<td>110</td>
+		<td>連続加算</td>
+		<td>[p1] [p2] [p3] … [pn] [0]</td>
+		<td>p1 + p2 + p3 + …　+pn → スタック</td>
+		<td>NULLが取り出されるまで森の中の数字を順番に加算して結果スタックに積む。</td>
+		</tr>
+
+		<tr>
+		<td>UTL</td>
+		<td>120</td>
+		<td>カウントアップ</td>
+		<td>[開始値p1] [終了値p2]</td>
+		<td>p1 , p1+1 , p1+2 , … + p2 → スタック</td>
+		<td>[開始値]～[終了値]の値をスタックに積む(p1&lt;p2とする) </td>
+		</tr>
+
+		<tr>
+		<td>UTL</td>
+		<td>121</td>
+		<td>カウントダウン</td>
+		<td>[開始値p1] [終了値p2]</td>
+		<td>p1 , p1-1 , p1-2 , … + p2 → スタック</td>
+		<td>[開始値]～[終了値]の値をスタックに積む(p2&gt;p1とする)</td>
+		</tr>
+
+		<tr>
+		<td>IO</td>
+		<td>200</td>
+		<td>表示</td>
+		<td>[表示文字p1] [表示文字p2] … [表示文字pn] [0]</td>
+		<td>p1 , p1-1 , p1-2 , … + p2 → プロンプト</td>
+		<td>文字を表示する。(0が出現するまでを文字列とする)<br>
+			 <table  border="1" style="border-collapse: collapse">
+			 <tr>
+			 <td>コード</td>
+			 <td>表示文字</td>
+			 </tr>
+			 <tr>
+			 <td>1</td>
+			 <td>う</td>
+			 </tr>
+			 <tr>
+			 <td>2</td>
+			 <td>ほ</td>
+			 </tr>
+			 <tr>
+			 <td>3</td>
+			 <td>改行</td>
+			 </tr>
+			 </table>
+		</td>
+		</tr>
+	</table>
+	<br>
+	<hr>
+	<h3>開発方針etc</h3>
+	　・実現する小さな機能を定め、それに向けて機能を追加していく方針をとる。<br>
+	　・「これがあったら便利だろな…」は今のところ追加しないこととする。<br>
+	　・<a href="https://github.com/RIMO0909/Gorilla-ScriptLanguage" target="_blank">Gorilla-Language(GitHub)</a><br>
+	<br>
+	<hr>
+	<h3>現在実現できること</h3>
+	　・1～100の合計を求める(2019/12/09)<br>
+	<br>
+	<h3>現在実現させようとしていること</h3>
+	　・FizzBuzz問題<br>
+	<br>
+	<hr>
+	<h3>更新履歴</h3>
+	　20191208 0000:新規作成<br>
+	　20191209 0430:色々大幅変更<br>
+	<br>
+	<hr>
+	<center>
+	<a href="https://twitter.com/rimo0909" target="_blank">RIMO(リモ)のTwitter</a><br>
+	(c)RIMO909
+	</center>
+</body>
+</html>
