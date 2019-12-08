@@ -1,0 +1,58 @@
+;:::::::::::::::::::::::::::::::
+; ゴリラ言語
+; (C)RIMO 2019
+;:::::::::::::::::::::::::::::::
+var hen: []int
+var src: []char
+var q: stack<int>
+
+func main()
+	var handle: file@Reader :: file@makeReader("うほ.txt")
+	do handle.delimiter("")
+	do @src :: handle.readStr().replace("\n", "")
+	do handle.fin()
+	do @q :: #stack<int>
+	
+	var pt: int :: 0
+	var srr: [][]char :: @src.split("うほほほ")
+	while ml(pt < ^srr)
+		if(srr[pt] = "うほほうほほ")
+			if(^@q = 0)
+				do cui@print("Error:Stack KARAPPO!!")
+				ret
+			end if
+			var cmd: int :: @q.get()
+			do dbg@print("\{cmd}\n")
+			switch(cmd)
+			case 20
+				var p1: int :: @q.get()
+				var p2: int :: @q.get()
+				;カウントアップ
+				for n(p2, p1)
+					do @q.add(n)
+				end for
+			case 10
+				;ALL SUM
+				var sum: int :: 0
+				while(^@q > 0)
+					do sum :+ @q.get()
+				end while
+				do @q.add(sum)
+			end switch
+		else
+			;数字
+			var num: []char :: ""
+			var srn: [][]char :: srr[pt].split("うほほ")
+			for n(0, ^srn - 1)
+				do num :: num ~ (^srn[n] / 2 - 1).toStr()
+			end for
+			do @q.add(num.toInt(&))
+		end if
+		do pt :+ 1
+	end while
+	do cui@print("\n")
+	while(^@q > 0)
+		do cui@print("\{@q.get()} ")
+	end while
+	do cui@print("\n")
+end func
